@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Application Management System</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #1e3d59;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background: #335c81;
+            padding: 15px;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #4472c4;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .menu a:hover {
+            background: #5a8dee;
+        }
+
+        .form-section {
+            display: none;
+            max-width: 500px;
+            margin: 30px auto;
+            padding: 25px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #1e3d59;
+        }
+
+        .form-section form input,
+        .form-section form button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .form-section form button {
+            background-color: #1e3d59;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .form-section form button:hover {
+            background-color: #335c81;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Job Application Management System</h1>
+    </header>
+
+    <nav class="menu">
+        <a href="#applicant">Applicant Registration</a>
+        <a href="#employee">Employee Login</a>
+        <a href="#hr">HR Executive Login</a>
+    </nav>
+
+    <div id="applicant" class="form-section">
+        <h2>Applicant Registration</h2>
+        <form method="POST" action="/cgi-bin/register.cgi">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="number" step="0.01" name="cgpa" placeholder="CGPA" required>
+            <input type="text" name="skills" placeholder="Your Skills" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <div id="employee" class="form-section">
+        <h2>Employee Login</h2>
+        <form>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div id="hr" class="form-section">
+        <h2>HR Executive Login</h2>
+        <form>
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sections = document.querySelectorAll(".form-section");
+            const links = document.querySelectorAll(".menu a");
+
+            sections.forEach(section => section.style.display = "none");
+
+            links.forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = this.getAttribute("href").substring(1);
+                    sections.forEach(section => {
+                        section.style.display = section.id === target ? "block" : "none";
+                    });
+                });
+            });
+
+            // Optional: Prevent dummy login form submissions
+            const loginForms = document.querySelectorAll("form:not([action])");
+            loginForms.forEach(form => {
+                form.addEventListener("submit", e => {
+                    e.preventDefault();
+                    alert("Login form submitted (demo only)");
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
