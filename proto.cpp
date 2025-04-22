@@ -1,0 +1,227 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits>
+#include <iomanip>
+
+using namespace std;
+
+// Base User class
+class User {
+protected:
+    string username;
+    string password;
+    string name;
+    
+public:
+    User(const string& uname, const string& pwd, const string& nm)
+        : username(uname), password(pwd), name(nm) {}
+        
+    virtual ~User() {}
+    
+    bool authenticate(const string& uname, const string& pwd) const {
+        return (username == uname && password == pwd);
+    }
+    
+    virtual void showMenu() = 0;
+    
+    string getName() const { return name; }
+    string getUsername() const { return username; }
+};
+
+// Applicant class
+class Applicant {
+private:
+    string name;
+    float cgpa;
+    string skills;
+    string email;
+    string status;
+    
+public:
+    Applicant(const string& nm, float gpa, const string& sk, 
+              const string& em)
+        : name(nm), cgpa(gpa), skills(sk), email(em), status("Pending") {}
+    
+    // Getters
+    float getCGPA() const { return cgpa; }
+    string getName() const { return name; }
+    string getSkills() const { return skills; }
+    string getEmail() const { return email; }
+    string getStatus() const { return status; }
+    
+    void display() const {
+        cout << "\nName: " << name
+             << "\nCGPA: " << fixed << setprecision(2) << cgpa
+             << "\nSkills: " << skills
+             << "\nEmail: " << email
+             << "\nStatus: " << status << "\n";
+    }
+};
+
+// Employee class
+class Employee : public User {
+private:
+    string designation;
+    double salary;
+    
+public:
+    Employee(const string& uname, const string& pwd, const string& nm,
+             const string& desig, double sal)
+        : User(uname, pwd, nm), designation(desig), salary(sal) {}
+    
+    void showMenu() override {
+        cout << "\n===== EMPLOYEE DASHBOARD =====\n";
+        cout << "Name: " << name << "\n";
+        cout << "Designation: " << designation << "\n";
+        cout << "Salary: $" << fixed << setprecision(2) << salary << "\n";
+        cout << "==============================\n";
+    }
+};
+
+// HR Executive class
+class HRExecutive : public User {
+public:
+    HRExecutive(const string& uname, const string& pwd, const string& nm)
+        : User(uname, pwd, nm) {}
+    
+    void showMenu() override {
+        cout << "\n===== HR EXECUTIVE DASHBOARD =====\n";
+        cout << "Welcome, " << name << "!\n";
+    }
+    
+    void viewApplications(vector<Applicant>& applicants) {
+        // Sort by CGPA in descending order
+        sort(applicants.begin(), applicants.end(), 
+            [](const Applicant& a, const Applicant& b) {
+                return a.getCGPA() > b.getCGPA();
+            });
+        
+        cout << "\n===== APPLICATIONS (Sorted by CGPA) =====\n";
+        for (const auto& applicant : applicants) {
+            applicant.display();
+            cout << "----------------------------\n";
+        }
+    }
+};
+
+// Global variables
+vector<Applicant> applicants;
+vector<Employee> employees = {
+    Employee("emp1", "password1", "John Doe", "Developer", 60000),
+    Employee("emp2", "password2", "Jane Smith", "Designer", 55000),
+    Employee("emp3", "password3", "Bob Johnson", "Manager", 75000)
+};
+vector<HRExecutive> hrExecutives = {
+    HRExecutive("hr1", "hrpass1", "Alice Brown"),
+    HRExecutive("hr2", "hrpass2", "Charlie Wilson")
+};
+
+// Function prototypes
+void showMainMenu();
+void applicantRegistration();
+void employeeLogin();
+void hrLogin();
+
+int main() {
+    showMainMenu();
+    return 0;
+}
+
+void showMainMenu() {
+    while (true) {
+        cout << "\n===== JOB APPLICATION MANAGEMENT SYSTEM =====\n";
+        cout << "1. Applicant Registration\n";
+        cout << "2. Employee Login\n";
+        cout << "3. HR Executive Login\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        
+        int choice;
+        cin >> choice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        
+        switch (choice) {
+            case 1:
+                applicantRegistration();
+                break;
+            case 2:
+                employeeLogin();
+                break;
+            case 3:
+                hrLogin();
+                break;
+            case 4:
+                cout << "Exiting system. Goodbye!\n";
+                return;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}
+
+void applicantRegistration() {
+    cout << "\n===== APPLICANT REGISTRATION =====\n";
+    
+    string name, skills, email;
+    float cgpa;
+    
+    cout << "Enter your name: ";
+    getline(cin, name);
+    
+    cout << "Enter your CGPA: ";
+    cin >> cgpa;
+    cin.ignore();
+    
+    cout << "Enter your skills: ";
+    getline(cin, skills);
+    
+    cout << "Enter your email: ";
+    getline(cin, email);
+    
+    applicants.emplace_back(name, cgpa, skills, email);
+    
+    cout << "\nApplication submitted successfully!\n";
+    cout << "Your application is now pending review.\n";
+}
+
+void employeeLogin() {
+    cout << "\n===== EMPLOYEE LOGIN =====\n";
+    string username, password;
+    
+    cout << "Username: ";
+    getline(cin, username);
+    
+    cout << "Password: ";
+    getline(cin, password);
+    
+    for (auto& emp : employees) {
+        if (emp.authenticate(username, password)) {
+            emp.showMenu();
+            return;
+        }
+    }
+    
+    cout << "Invalid username or password.\n";
+}
+
+void hrLogin() {
+    cout << "\n===== HR EXECUTIVE LOGIN =====\n";
+    string username, password;
+    
+    cout << "Username: ";
+    getline(cin, username);
+    
+    cout << "Password: ";
+    getline(cin, password);
+    
+    for (auto& hr : hrExecutives) {
+        if (hr.authenticate(username, password)) {
+            hr.showMenu();
+            hr.viewApplications(applicants);
+            return;
+        }
+    }
+    
+    cout << "Invalid username or password.\n";
+}
