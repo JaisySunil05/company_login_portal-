@@ -1,0 +1,102 @@
+
+
+Instructions to Set Up the Crow Backend and Frontend
+
+Prerequisites
+
+Installation Steps
+
+1. Install Dependencies
+
+For Ubuntu/Debian-based systems:
+
+sudo apt update
+sudo apt install g++ cmake libboost-all-dev libssl-dev
+
+For Arch-based systems:
+
+sudo pacman -S gcc boost openssl
+
+2. Install Crow
+
+Crow is header-only. Clone it into your project or system:
+
+git clone https://github.com/CrowCpp/Crow.git
+
+Alternatively, you can install it globally or just copy the Crow include/ folder into your project directory.
+
+
+---
+
+How to Run
+
+3. Compile the Backend
+
+In the folder where server.cpp is located:
+
+g++ server.cpp -o server -I/path/to/crow/include -lboost_system -lpthread -lssl -lcrypto
+
+Note:
+Replace /path/to/crow/include with the actual path where you placed Crow's include folder.
+
+For example, if your project looks like this:
+
+/project
+  ├── include/ (contains crow_all.h)
+  ├── server.cpp
+  └── index.html
+
+Then the compile command would be:
+
+g++ server.cpp -o server -Iinclude -lboost_system -lpthread -lssl -lcrypto
+
+4. Run the Backend Server
+
+./server
+
+By default, it will start serving at:
+
+http://localhost:18080/
+
+You should see a message like:
+
+Server is running at http://localhost:18080/
+
+
+---
+
+How to Link Backend and Frontend
+
+1. Open index.html file in a code editor.
+
+
+2. Make sure all fetch URLs in index.html point to http://localhost:18080.
+
+
+3. Simply open index.html in your browser.
+
+
+4. Now, the frontend will send HTTP requests to your C++ server running Crow.
+
+
+
+
+---
+
+Folder Structure Recommendation
+
+
+---
+
+Important Notes
+
+Keep the server running while testing the frontend.
+
+Ensure your browser does not block localhost requests (disable strict CORS settings if needed).
+
+If you move to a public deployment, you must secure your server (use HTTPS).
+
+The backend must be recompiled after every code change.
+
+
+
